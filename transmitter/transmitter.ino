@@ -1,19 +1,23 @@
+#include <Wire.h>
 #include <WiFiConfig.h>
 #include <Adafruit_AHTX0.h>
 
 Adafruit_AHTX0 aht;
 
-// >>> REPLACE with your receiver's MAC address <<<
-uint8_t receiverAddress[] = {0x34, 0xB7, 0xDA, 0xF6, 0x3E, 0x78};
+// replace with your ESP-32 MAC address
+uint8_t receiverAddress[] = {0xA8, 0x46, 0x74, 0x5C, 0x13, 0x98};
 
+// weather report object for sending report
 WeatherReport report;
 
-// Light sensor pin
-const int lightPin = 34;     // ADC pin
-const int lightThreshold = 2000;   // Adjust after testing
+const int lightPin = 0;         // ADC pin
+const int lightThreshold = 2000; // Adjust after testing
 
 void setup() {
   Serial.begin(115200);
+
+  // Initialize I2C on custom pins
+  Wire.begin(6, 5);  // SDA=6, SCL=5
 
   // Initialize AHT20
   if (!aht.begin()) {
@@ -27,43 +31,23 @@ void setup() {
 }
 
 void loop() {
-
   sensors_event_t humidity, temp;
   aht.getEvent(&humidity, &temp);
 
-  // Read light level
   int lightValue = analogRead(lightPin);
 
-  // Fill WeatherReport container
   report.temperature = (int)temp.temperature;
   report.humidity = (int)humidity.relative_humidity;
 
-  if (lightValue > lightThreshold) {
-    report.light = 1;   // Day
-  } else {
-    report.light = 0;   // Night
-  }
+  report.light = (lightValue > lightThreshold) ? 1 : 0;
 
-  // Send report
   send_report(receiverAddress, report);
 
-  // Debug to Serial
-  Serial.print("Temp: ");
-  Serial.print(report.temperature);
-  Serial.println(" C");
-
-  Serial.print("Humidity: ");
-  Serial.print(report.humidity);
-  Serial.println(" %");
-
-  Serial.print("Time: ");
-  if (report.light == 1) {
-    Serial.println("Day");
-  } else {
-    Serial.println("Night");
-  }
-
+  // Debug Serial
+  Serial.print("Temp: "); Serial.print(report.temperature); Serial.println(" C");
+  Serial.print("Humidity: "); Serial.print(report.humidity); Serial.println(" %");
+  Serial.print("Time: "); Serial.println(report.light ? "Day" : "Night");
   Serial.println("--------------------");
 
-  delay(10000);   // 10 seconds
+  delay(10000);
 }

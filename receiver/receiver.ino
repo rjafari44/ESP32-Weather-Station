@@ -1,13 +1,17 @@
+#include <Wire.h>
 #include <WiFiConfig.h>
 #include <LiquidCrystal_I2C.h>
 
-// LCD at default address 0x27, 16 columns, 2 rows
+// LCD at address 0x27, 16 columns, 2 rows
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 WeatherReport report;
 
 void setup() {
   Serial.begin(115200);
+
+  // Initialize I2C on custom pins SDA=5, SCL=4
+  Wire.begin(5, 4);   // Must be called BEFORE lcd.init()!
 
   // Initialize LCD
   lcd.init();
@@ -25,7 +29,6 @@ void setup() {
 }
 
 void loop() {
-
   lcd.clear();
 
   // Row 1: Temperature & Humidity
@@ -41,12 +44,7 @@ void loop() {
   // Row 2: Day/Night
   lcd.setCursor(0, 1);
   lcd.print("Time: ");
-
-  if (report.light == 1) {
-    lcd.print("Day");
-  } else {
-    lcd.print("Night");
-  }
+  lcd.print(report.light == 1 ? "Day" : "Night");
 
   // Serial monitor debug
   Serial.print("Temp: ");
@@ -56,5 +54,5 @@ void loop() {
   Serial.print("Light: ");
   Serial.println(report.light);
 
-  delay(1000);   // Refresh LCD every second
+  delay(5000);   // Refresh every 5 seconds
 }
