@@ -17,7 +17,7 @@ void setup() {
   Serial.begin(115200);
 
   // initialize I2C on custom pins (SDA, SCL)
-  Wire.begin(6, 5);
+  Wire.begin(5, 6);
 
   // check for AHT20 status
   if (!aht.begin()) {

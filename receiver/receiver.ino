@@ -62,5 +62,5 @@ void loop() {
   Serial.print("Light: ");
   Serial.println(report.light);
 
-  delay(5000);   // Refresh every 5 seconds
+  delay(5000);   // refresh every 5 seconds to account for any report time mismatch
 }
