@@ -5,25 +5,27 @@
 // LCD at address 0x27, 16 columns, 2 rows
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
+// weather report object for receiving report
 WeatherReport report;
 
 void setup() {
   Serial.begin(115200);
 
-  // Initialize I2C on custom pins SDA=5, SCL=4
+  // initialize I2C on custom pins (SDA, SCL)
   Wire.begin(5, 4);   // Must be called BEFORE lcd.init()!
 
-  // Initialize LCD
+  // initialize LCD
   lcd.init();
   lcd.backlight();
   lcd.clear();
 
-  // Setup WiFi + ESP-NOW
+  // setup WiFi
   wifi_setup();
 
-  // Configure this ESP32 as receiver
+  // configure this ESP32 as receiver
   set_report_receiver(&report);
 
+  // display an initial waiting on row 1
   lcd.setCursor(0,0);
   lcd.print("Waiting...");
 }
@@ -31,7 +33,7 @@ void setup() {
 void loop() {
   lcd.clear();
 
-  // Row 1: Temperature & Humidity
+  // row 1: temperature & humidity
   lcd.setCursor(0, 0);
   lcd.print("T:");
   lcd.print(report.temperature);
@@ -41,12 +43,18 @@ void loop() {
   lcd.print(report.humidity);
   lcd.print("%");
 
-  // Row 2: Day/Night
+  // row 2: Day/Night
   lcd.setCursor(0, 1);
   lcd.print("Time: ");
-  lcd.print(report.light == 1 ? "Day" : "Night");
 
-  // Serial monitor debug
+  // if report returns 1, display day, else display night
+  if (report.light == 1) {
+    lcd.print("Day");
+  } else {
+    lcd.print("Night");
+  }
+
+  // display the report to the serial monitor
   Serial.print("Temp: ");
   Serial.println(report.temperature);
   Serial.print("Humidity: ");
