@@ -10,9 +10,9 @@
 ![Diagram](assets/transmitter.png)
 
 ## How to run
-I ran this code on a WeAct Studio esp32-c3 board.
+I ran this code on a WeAct Studio ESP32-C3 board.
 
-If using the Arduino IDE, make sure the WeAct Studio esp32-c3 board is the correct selected one and enable CDC on boot.
+If using the Arduino IDE, make sure the WeAct Studio ESP32-C3 board is the correct selected one and enable CDC on boot.
 
 If running the script in CLI, it will prompt you for your board's serial port that it is connected to, so you need to find it and mention it. The serial port is usually /dev/ttyACM0 or /dev/ttyUSB0 but it could also be different. Also, if the shell script is not executable, chmod it.
 
