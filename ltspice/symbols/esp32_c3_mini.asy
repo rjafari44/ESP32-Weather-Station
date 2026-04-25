@@ -1,7 +1,7 @@
 Version 4
 SymbolType BLOCK
 RECTANGLE Normal 224 304 -48 -79
-TEXT 0 -102 Left 2 ESP32-C3-Mini
+TEXT 0 -102 Left 2 ESP32 C3 Mini
 PIN -48 -64 LEFT 8
 PINATTR PinName '0'
 PINATTR SpiceOrder 1
